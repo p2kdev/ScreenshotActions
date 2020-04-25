@@ -16,6 +16,6 @@ No options to configure. Hope the tweak helps you in being productive!
 Credits : elijahandandrew@gmail.com for their work on the Imgur Uploader for tweak https://github.com/efrederickson/Almpoum
 
 Support/Requests :
-Twitter -> Twitter Link
+Twitter -> https://twitter.com/p2kdev
 Email -> p2kdev@gmail.com
 Donations -> Donations highly appreciated. Donation link found on my twitter profile!
