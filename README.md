@@ -17,5 +17,3 @@ Credits : elijahandandrew@gmail.com for their work on the Imgur Uploader for twe
 
 Support/Requests :
 Twitter -> https://twitter.com/p2kdev
-Email -> p2kdev@gmail.com
-Donations -> Donations highly appreciated. Donation link found on my twitter profile!
