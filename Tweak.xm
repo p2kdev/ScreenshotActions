@@ -76,52 +76,52 @@ static BOOL shouldStopTimer = NO;
 	- (void)showAlert
 	{
 		SSSActionsAlertController * alert = [SSSActionsAlertController
-																alertControllerWithTitle:@"ScreenShotActions"
-																message:@"What would you like to do?"
-																preferredStyle:UIAlertControllerStyleActionSheet];
+							alertControllerWithTitle:@"ScreenShotActions"
+							message:@"What would you like to do?"
+							preferredStyle:UIAlertControllerStyleActionSheet];
 
 	UIAlertAction* copyWithoutDeleteButton = [UIAlertAction
                               actionWithTitle:@"Copy Image"
                               style:UIAlertActionStyleDefault
                               handler:^(UIAlertAction * action) {
-															[self copyImageToClipboard];
-														}];
+							[self copyImageToClipboard];
+						}];
 
 		UIAlertAction* copyButton = [UIAlertAction
 	                              actionWithTitle:@"Copy Image & Delete"
 	                              style:UIAlertActionStyleDestructive
 	                              handler:^(UIAlertAction * action) {
-																[self copyImageToClipboard];
-																[self deleteImages];
-															}];
+							[self copyImageToClipboard];
+							[self deleteImages];
+						}];
 
 		UIAlertAction* deleteButton = [UIAlertAction
 		                          actionWithTitle:@"Delete Image(s)"
 		                          style:UIAlertActionStyleDestructive
 		                          handler:^(UIAlertAction * action) {
-															[self deleteImages];
-														}];
+							[self deleteImages];
+						}];
 
 		UIAlertAction* shareButton = [UIAlertAction
-																actionWithTitle:@"Share Image"
-																style:UIAlertActionStyleDefault
-																handler:^(UIAlertAction * action) {
-																[self showShareSheet];
-																}];
+						actionWithTitle:@"Share Image"
+						style:UIAlertActionStyleDefault
+						handler:^(UIAlertAction * action) {
+						[self showShareSheet];
+						}];
 
 		UIAlertAction* uploadButton = [UIAlertAction
-																actionWithTitle:@"Upload to Imgur"
-																style:UIAlertActionStyleDefault
-																handler:^(UIAlertAction * action) {
-																[self uploadToImgur];
+						actionWithTitle:@"Upload to Imgur"
+						style:UIAlertActionStyleDefault
+						handler:^(UIAlertAction * action) {
+						[self uploadToImgur];
 
-																}];
+						}];
 
 		UIAlertAction* cancelButton = [UIAlertAction
-																actionWithTitle:@"Cancel"
-																style:UIAlertActionStyleCancel
-																handler:^(UIAlertAction * action) {
-																}];
+						actionWithTitle:@"Cancel"
+						style:UIAlertActionStyleCancel
+						handler:^(UIAlertAction * action) {
+						}];
 
 	  [alert addAction:uploadButton];
 		[alert addAction:shareButton];
@@ -177,15 +177,15 @@ static BOOL shouldStopTimer = NO;
 	- (void)displayAlert:(NSString *)arg1
 	{
 		SSSActionsAlertController * errorAlert = [SSSActionsAlertController
-																alertControllerWithTitle:@"Imgur Upload"
-																message:arg1
-																preferredStyle:UIAlertControllerStyleAlert];
+								alertControllerWithTitle:@"Imgur Upload"
+								message:arg1
+								preferredStyle:UIAlertControllerStyleAlert];
 
 			UIAlertAction* cancelButton = [UIAlertAction
-																	actionWithTitle:@"Ok"
-																	style:UIAlertActionStyleCancel
-																	handler:^(UIAlertAction * action) {
-																	}];
+							actionWithTitle:@"Ok"
+							style:UIAlertActionStyleCancel
+							handler:^(UIAlertAction * action) {
+							}];
 
 			[errorAlert addAction:cancelButton];
 			[self presentViewController:errorAlert animated:YES completion:nil];
@@ -235,11 +235,11 @@ static BOOL shouldStopTimer = NO;
 		NSMutableArray *origActions = [[origAlert actions] mutableCopy];
 
 		UIAlertAction* uploadButton = [UIAlertAction
-																actionWithTitle:@"Upload to Imgur"
-																style:UIAlertActionStyleDefault
-																handler:^(UIAlertAction * action) {
-																	[self uploadToImgur];
-																}];
+						actionWithTitle:@"Upload to Imgur"
+						style:UIAlertActionStyleDefault
+						handler:^(UIAlertAction * action) {
+							[self uploadToImgur];
+						}];
 			[origActions insertObject:uploadButton atIndex:origActions.count<= 1 ? 0 : origActions.count - 2];
 			[origAlert _removeAllActions];
 
@@ -267,8 +267,8 @@ static BOOL shouldStopTimer = NO;
 					[self _cancelSharing];
 						if (result)
 						{
-								[[UIPasteboard generalPasteboard] setString:result];
-								[self displayAlert:@"Image upload successful! URL has been copied to the clipboard"];
+							[[UIPasteboard generalPasteboard] setString:result];
+							[self displayAlert:@"Image upload successful! URL has been copied to the clipboard"];
 						}
 				}
 				failureBlock:^(NSURLResponse *a, NSError *error, NSInteger c){
@@ -280,15 +280,15 @@ static BOOL shouldStopTimer = NO;
 	- (void)displayAlert:(NSString *)arg1
 	{
 		SSSActionsAlertController * errorAlert = [SSSActionsAlertController
-																alertControllerWithTitle:@"Imgur Upload"
-																message:arg1
-																preferredStyle:UIAlertControllerStyleAlert];
+								alertControllerWithTitle:@"Imgur Upload"
+								message:arg1
+								preferredStyle:UIAlertControllerStyleAlert];
 
 			UIAlertAction* cancelButton = [UIAlertAction
-																	actionWithTitle:@"Ok"
-																	style:UIAlertActionStyleCancel
-																	handler:^(UIAlertAction * action) {
-																	}];
+							actionWithTitle:@"Ok"
+							style:UIAlertActionStyleCancel
+							handler:^(UIAlertAction * action) {
+							}];
 
 			[errorAlert addAction:cancelButton];
 			[self presentViewController:errorAlert animated:YES completion:nil];
