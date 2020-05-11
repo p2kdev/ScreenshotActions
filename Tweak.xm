@@ -37,18 +37,6 @@
 	- (void)showAlert;
 @end
 
-@interface SSSActionsAlertController : UIAlertController
-
-@end
-
-@implementation SSSActionsAlertController
-
-	-(BOOL)_canShowWhileLocked
-	{
-		return YES;
-	}
-
-@end
 
 static BOOL shouldStopTimer = NO;
 
@@ -56,26 +44,17 @@ static BOOL shouldStopTimer = NO;
 
 %property (nonatomic,retain) UIAlertController* busyController;
 
-	- (void)viewDidAppear:(BOOL)arg1
+	- (void)_handlePileLongPress:(UIGestureRecognizer*)arg1
+	//- (void)_pileTapped
 	{
-		%orig;
-		if (arg1)
-		{
-			shouldStopTimer = NO;
-			[self showAlert];	
-		}
+		shouldStopTimer = YES;
+		[self showAlert];
 	}
-
-	// - (void)_handlePileLongPress:(UIGestureRecognizer*)arg1
-	// {
-	// 	shouldStopTimer = YES;
-	// 	[self showAlert]
-	// }
 
 	%new
 	- (void)showAlert
 	{
-		SSSActionsAlertController * alert = [SSSActionsAlertController
+		UIAlertController * alert = [UIAlertController
 							alertControllerWithTitle:@"ScreenShotActions"
 							message:@"What would you like to do?"
 							preferredStyle:UIAlertControllerStyleActionSheet];
@@ -176,7 +155,7 @@ static BOOL shouldStopTimer = NO;
 	%new
 	- (void)displayAlert:(NSString *)arg1
 	{
-		SSSActionsAlertController * errorAlert = [SSSActionsAlertController
+		UIAlertController * errorAlert = [UIAlertController
 								alertControllerWithTitle:@"Imgur Upload"
 								message:arg1
 								preferredStyle:UIAlertControllerStyleAlert];
@@ -279,7 +258,7 @@ static BOOL shouldStopTimer = NO;
 	%new
 	- (void)displayAlert:(NSString *)arg1
 	{
-		SSSActionsAlertController * errorAlert = [SSSActionsAlertController
+		UIAlertController * errorAlert = [UIAlertController
 								alertControllerWithTitle:@"Imgur Upload"
 								message:arg1
 								preferredStyle:UIAlertControllerStyleAlert];
