@@ -20,6 +20,11 @@
 	- (void)_cancelSharing;
 	- (void)uploadToImgur;
 	- (void)displayAlert:(NSString*)arg1;
+	- (void)copyImageToClipboard;
+	- (void)deleteImages;
+	- (void)removeScreenshots:(id)arg1 forReason:(unsigned long long)arg2 alongsideAnimations:(id)arg3 completion:(id)arg4;
+	- (void)_dismissWithDeleteOptions:(unsigned long long)arg1;
+	- (void)_deletePushed;
 @end
 
 @interface SSSContainerViewController : UIViewController
@@ -67,7 +72,7 @@ static BOOL shouldStopTimer = NO;
 						}];
 
 		UIAlertAction* copyButton = [UIAlertAction
-	                              actionWithTitle:@"Copy Image & Delete"
+	                              actionWithTitle:@"Copy and Delete"
 	                              style:UIAlertActionStyleDestructive
 	                              handler:^(UIAlertAction * action) {
 							[self copyImageToClipboard];
@@ -127,8 +132,8 @@ static BOOL shouldStopTimer = NO;
 		SSSScreenshotsViewController *screenshotsController = MSHookIvar<SSSScreenshotsViewController *>(self, "_screenshotsViewController");
 
 		self.busyController = [UIAlertController alertControllerWithTitle:nil
-																																		 message:@"Please wait..."
-																															preferredStyle:UIAlertControllerStyleAlert];
+									message:@"Please wait..."
+									preferredStyle:UIAlertControllerStyleAlert];
 			[self presentViewController:self.busyController animated:YES completion:nil];
 
 			NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
@@ -146,9 +151,12 @@ static BOOL shouldStopTimer = NO;
 								[[UIPasteboard generalPasteboard] setString:result];
 								[self displayAlert:@"Image upload successful! URL has been copied to the clipboard"];
 						}
+						else
+							[self displayAlert:@"Image upload to imgur failed!"];						
 				}
 				failureBlock:^(NSURLResponse *a, NSError *error, NSInteger c){
-						[self displayAlert:[NSString stringWithFormat:@"An error occured while uploading the screenshot: %@", error ? [error localizedDescription] : @"Unknown Error while uploading image!"]];
+						[self.busyController dismissViewControllerAnimated:YES completion:nil];
+						[self displayAlert:[NSString stringWithFormat:@"An error occured while uploading the screenshot: %@", error ? [error localizedDescription] : @"Imgur upload failed due to an unknown error"]];
 						}];
 	}
 
@@ -219,7 +227,16 @@ static BOOL shouldStopTimer = NO;
 						handler:^(UIAlertAction * action) {
 							[self uploadToImgur];
 						}];
+
+		UIAlertAction* copyAndDelete = [UIAlertAction
+						actionWithTitle:@"Copy and Delete"
+						style:UIAlertActionStyleDestructive
+						handler:^(UIAlertAction * action) {
+							[self copyImageToClipboard];
+							[self deleteImages];
+						}];						
 			[origActions insertObject:uploadButton atIndex:origActions.count<= 1 ? 0 : origActions.count - 2];
+			[origActions insertObject:copyAndDelete atIndex:origActions.count<= 1 ? 0 : origActions.count - 2];
 			[origAlert _removeAllActions];
 
 			for(id action in origActions)
@@ -230,8 +247,8 @@ static BOOL shouldStopTimer = NO;
 	- (void)uploadToImgur
 	{
 		self.busyController = [UIAlertController alertControllerWithTitle:nil
-																																		 message:@"Please wait..."
-																															preferredStyle:UIAlertControllerStyleAlert];
+									message:@"Please wait..."
+									preferredStyle:UIAlertControllerStyleAlert];
 			[self presentViewController:self.busyController animated:YES completion:nil];
 
 			NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
@@ -243,17 +260,32 @@ static BOOL shouldStopTimer = NO;
 				completionBlock:^(NSString *result)
 				{
 					[self.busyController dismissViewControllerAnimated:YES completion:nil];
-					[self _cancelSharing];
-						if (result)
-						{
-							[[UIPasteboard generalPasteboard] setString:result];
-							[self displayAlert:@"Image upload successful! URL has been copied to the clipboard"];
-						}
+					if (result)
+					{
+						[[UIPasteboard generalPasteboard] setString:result];
+						[self displayAlert:@"Image upload successful! URL has been copied to the clipboard"];
+					}
+					else
+						[self displayAlert:@"Image upload to imgur failed!"];
 				}
 				failureBlock:^(NSURLResponse *a, NSError *error, NSInteger c){
-						[self displayAlert:[NSString stringWithFormat:@"An error occured while uploading the screenshot: %@", error ? [error localizedDescription] : @"Unknown Error while uploading image!"]];
+						[self.busyController dismissViewControllerAnimated:YES completion:nil];
+						[self displayAlert:[NSString stringWithFormat:@"An error occured while uploading the screenshot: %@", error ? [error localizedDescription] : @"Imgur upload failed due to an unknown error"]];
 						}];
 	}
+
+	%new
+	- (void)copyImageToClipboard
+	{
+		UIPasteboard *pb = [UIPasteboard generalPasteboard];
+		[pb setData:UIImagePNGRepresentation([UIImage _sss_imageFromScreenshot:self.currentScreenshot]) forPasteboardType:(__bridge NSString *)kUTTypePNG];
+	}
+
+	%new
+	- (void)deleteImages
+	{
+		[self _dismissWithDeleteOptions:0];
+	}	
 
 	%new
 	- (void)displayAlert:(NSString *)arg1
@@ -278,12 +310,7 @@ static BOOL shouldStopTimer = NO;
 	- (void)_timerFired
 	{
 		if (shouldStopTimer)
-		{
-			// NSTimer *timer = MSHookIvar<NSTimer*>(self,"_currentTimer");
-			// [timer invalidate];
-			// timer = nil;
 			return;
-		}
 
 		%orig;
 	}

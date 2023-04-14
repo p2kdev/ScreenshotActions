@@ -1,7 +1,7 @@
 Package: com.p2kdev.screenshotactions
 Name: ScreenshotActions
 Depends: firmware (>= 11.0), mobilesubstrate
-Version: 1.1.1
+Version: 1.2
 Architecture: iphoneos-arm
 Description: Add Quick Actions to the screenshot preview!
 Maintainer: P2KDev <p2kdev@gmail.com>

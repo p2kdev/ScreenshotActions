@@ -78,24 +78,32 @@
     [request setHTTPBody:requestBody];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        if (data == nil)
+        if (data == nil || error)
         {
             failureBlock(response, error, 0);
         }
-        NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if ([responseDictionary valueForKeyPath:@"data.error"]) {
-            if (failureBlock) {
-                if (!error) {
-                    // If no error has been provided, create one based on the response received from the server
-                    error = [NSError errorWithDomain:@"imguruploader" code:10000 userInfo:@{NSLocalizedFailureReasonErrorKey : [responseDictionary valueForKeyPath:@"data.error"]}];
+
+        if (data)
+        {
+            NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+            if ([responseDictionary valueForKeyPath:@"data.error"]) {
+                if (failureBlock) {
+                    if (!error) {
+                        // If no error has been provided, create one based on the response received from the server
+                        error = [NSError errorWithDomain:@"ScreenshotActions" code:10000 userInfo:@{NSLocalizedFailureReasonErrorKey : [responseDictionary valueForKeyPath:@"data.error"]}];
+                    }
+                    failureBlock(response, error, [[responseDictionary valueForKey:@"status"] intValue]);
                 }
-                failureBlock(response, error, [[responseDictionary valueForKey:@"status"] intValue]);
+            } else {
+                if (completion) {
+                    completion([responseDictionary valueForKeyPath:@"data.link"]);
+                }
+                
             }
-        } else {
-            if (completion) {
-                completion([responseDictionary valueForKeyPath:@"data.link"]);
-            }
-            
+        }
+        else
+        {
+            failureBlock(nil,[NSError errorWithDomain:@"ScreenshotActions" code:10000 userInfo:@{NSLocalizedFailureReasonErrorKey : @"Imgur Upload failed due to unknown error"}],0);
         }
         
     }];
